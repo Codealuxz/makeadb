@@ -61,14 +61,13 @@ document.addEventListener('click', (e) => {
   const copyBtn = e.target.closest('.copy-btn');
   if (copyBtn) {
     const url = copyBtn.dataset.url;
-    navigator.clipboard.writeText(url).then(() => {
-      copyBtn.classList.add('copied');
-      copyBtn.innerHTML = CHECK_ICON;
-      setTimeout(() => {
-        copyBtn.classList.remove('copied');
-        copyBtn.innerHTML = COPY_ICON;
-      }, 2000);
-    });
+    copyToClipboard(url);
+    copyBtn.classList.add('copied');
+    copyBtn.innerHTML = CHECK_ICON;
+    setTimeout(() => {
+      copyBtn.classList.remove('copied');
+      copyBtn.innerHTML = COPY_ICON;
+    }, 2000);
     return;
   }
 
@@ -301,6 +300,21 @@ function formatDate(str) {
   if (!str) return '';
   const d = new Date(str + 'Z');
   return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text);
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
 }
 
 function esc(s) {

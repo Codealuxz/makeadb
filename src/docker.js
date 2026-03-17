@@ -209,6 +209,12 @@ async function checkDocker() {
   }
 }
 
+function buildConnectionUrl(record, host) {
+  const config = DB_TYPES[record.type];
+  if (!config) return record.connection_url;
+  return config.url(host, record.port, record.username, record.password, record.db_name);
+}
+
 module.exports = {
   DB_TYPES,
   createDatabase,
@@ -216,5 +222,6 @@ module.exports = {
   startDatabase,
   stopDatabase,
   syncContainers,
-  checkDocker
+  checkDocker,
+  buildConnectionUrl
 };

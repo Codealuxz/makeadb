@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./db');
-const { createDatabase, deleteDatabase, startDatabase, stopDatabase, checkDocker, DB_TYPES } = require('./docker');
+const { createDatabase, deleteDatabase, startDatabase, stopDatabase, checkDocker, buildConnectionUrl, DB_TYPES } = require('./docker');
 
 router.get('/health', async (req, res) => {
   const docker = await checkDocker();
@@ -12,9 +12,19 @@ router.get('/types', (req, res) => {
   res.json(Object.keys(DB_TYPES));
 });
 
+function getHost(req) {
+  const h = req.get('host') || req.hostname || 'localhost';
+  return h.split(':')[0];
+}
+
 router.get('/databases', (req, res) => {
-  const databases = db.prepare('SELECT id, name, type, port, username, password, db_name, connection_url, status, created_at FROM databases ORDER BY created_at DESC').all();
-  res.json(databases);
+  const host = getHost(req);
+  const databases = db.prepare('SELECT * FROM databases ORDER BY created_at DESC').all();
+  const result = databases.map(d => ({
+    ...d,
+    connection_url: buildConnectionUrl(d, host)
+  }));
+  res.json(result);
 });
 
 router.post('/databases', async (req, res) => {

@@ -101,13 +101,15 @@ async function pullImage(image) {
   });
 }
 
-async function createDatabase(name, type) {
+async function createDatabase(name, type, customPassword) {
   const config = DB_TYPES[type];
   if (!config) throw new Error(`Type non supporté: ${type}`);
 
   const id = crypto.randomUUID();
   const port = getAvailablePort();
-  const { username, password, dbName } = generateCredentials();
+  const creds = generateCredentials();
+  if (customPassword) creds.password = customPassword;
+  const { username, password, dbName } = creds;
   const connectionUrl = config.url(DB_HOST, port, username, password, dbName);
 
   db.prepare(`

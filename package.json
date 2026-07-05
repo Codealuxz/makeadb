@@ -2,6 +2,28 @@
   "name": "makeadb",
   "version": "1.0.0",
   "private": true,
+  "description": "Self-hosted panel that spins up disposable Docker databases on demand — PostgreSQL, MySQL, MariaDB, MongoDB and Redis with one click.",
+  "license": "MIT",
+  "author": "Codealuxz",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Codealuxz/makeadb.git"
+  },
+  "keywords": [
+    "docker",
+    "database",
+    "postgresql",
+    "mysql",
+    "mariadb",
+    "mongodb",
+    "redis",
+    "self-hosted",
+    "devtools",
+    "provisioning"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js"
